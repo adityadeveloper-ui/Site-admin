@@ -37,7 +37,8 @@ function deep(url,fetchHtml,html0,max){var out={rv:[],asp:[],rp:[]},pg=1;
  return next()}
 
 var UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
-function getHtml(u){return fetch(u,{redirect:'follow',headers:{'user-agent':UA,'accept-language':'en-IN,en;q=0.9','accept':'text/html,application/xhtml+xml'}}).then(function(r){return r.text().then(function(t){return{text:t,url:r.url||u,status:r.status}})})}
+var UAM='Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36';
+function getHtml(u,m){return fetch(u,{redirect:'follow',headers:{'user-agent':m?UAM:UA,'referer':'https://www.google.com/','accept-language':'en-IN,en;q=0.9','accept':'text/html,application/xhtml+xml'}}).then(function(r){return r.text().then(function(t){return(r.status==429||r.status==403)&&!m?getHtml(u,1):{text:t,url:r.url||u,status:r.status}})})}
 module.exports=function(req,res){
  res.setHeader('Access-Control-Allow-Origin','*');res.setHeader('Cache-Control','no-store');
  var u=String((req.query&&req.query.url)||'');if(!/^https?:\/\//i.test(u))return res.status(400).json({error:'Valid link required'});
