@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Site builder</title>
+<style>
+:root{--bg:#f1f3f6;--card:#fff;--text:#212121;--muted:#6b6f76;--line:#e0e3e8;--blue:#2874f0;--yel:#ffe500;--red:#d93025;--grn:#188038;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161a;--card:#1e2126;--text:#eceef1;--muted:#9aa0a8;--line:#30343b;--blue:#6ea2ff}}
+:root[data-theme="dark"]{--bg:#14161a;--card:#1e2126;--text:#eceef1;--muted:#9aa0a8;--line:#30343b;--blue:#6ea2ff}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:var(--blue);color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+header b{font-size:1.1rem}header button{background:none;border:1px solid #fff8;color:#fff;border-radius:6px;padding:4px 10px;cursor:pointer}
+main{max-width:860px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+h2{font-size:1rem;margin:0 0 10px}
+label{display:block;font-size:.8rem;color:var(--muted);margin:10px 0 3px}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);font:inherit}
+textarea{min-height:90px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.row{display:flex;gap:8px}.row>*{flex:1}.row .fit{flex:none}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:6px;padding:10px 18px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn.y{background:var(--yel);color:#212121}.btn.s{background:none;color:var(--blue);border:1px solid var(--line)}.btn.d{background:none;color:var(--red);border:1px solid var(--line)}
+.btn:disabled{opacity:.55;cursor:wait}
+.imgs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.imgs div{position:relative;width:84px;height:84px;border:1px solid var(--line);border-radius:6px;background:#fff}
+.imgs img{width:100%;height:100%;object-fit:contain}
+.imgs button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:0;background:var(--red);color:#fff;cursor:pointer;line-height:1}
+.imgs div.main{outline:2px solid var(--blue)}
+.msg{padding:10px 12px;border-radius:6px;margin-top:10px;font-size:.9rem}
+.msg.e{background:#d9302518;color:var(--red)}.msg.o{background:#18803818;color:var(--grn)}
+.list{display:grid;gap:8px}
+.it{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px}
+.it img{width:56px;height:56px;object-fit:contain;background:#fff;border-radius:6px}
+.it div.t{flex:1;min-width:0}.it .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it small{color:var(--muted)}
+.hide{display:none}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:18px;text-align:center}
+</style>
+</head>
+<body>
+<header><b>Site builder</b><span id="nm" style="font-size:.85rem;opacity:.9"></span></header>
+<main>
+  <section class="card">
+    <h2>Step 1. Upload your site HTML</h2>
+    <div class="drop" id="drop"><p style="margin:0 0 8px"><b>Choose your site file</b> (the .html file) or drop it here</p><input type="file" id="file"></div>
+    <div id="um"></div>
+  </section>
+  <section class="card hide" id="s2">
+    <h2>Step 2. Add products from links</h2>
+    <div class="row"><input id="url" type="url" placeholder="Paste product link here"><button class="btn fit y" id="fetch">Fetch</button></div>
+    <div id="fm"></div>
+  </section>
+  <section class="card hide" id="ed">
+    <h2 id="edt">Review and save</h2>
+    <label>Title</label><input id="n">
+    <div class="g4">
+      <div><label>Sale price (₹)</label><input id="p" type="number"></div>
+      <div><label>MRP (₹)</label><input id="m" type="number"></div>
+      <div><label>Rating</label><input id="r" type="number" step="0.1" max="5"></div>
+      <div><label>Rating count</label><input id="rc" type="number"></div>
+      <div><label>Delivery (days)</label><input id="dl" type="number" value="3"></div>
+      <div><label>Category</label><select id="c"><option>Mobiles</option><option>Electronics</option><option>Appliances</option><option>Furniture</option><option>Fashion</option><option>Beauty</option><option>Home</option></select></div>
+    </div>
+    <label>Images (the first one is the main image)</label>
+    <div class="imgs" id="imgs"></div>
+    <div class="row" style="margin-top:8px"><input id="addimg" placeholder="Add image URL"><button class="btn fit s" id="addbtn">Add</button></div>
+    <label>Or upload images from your device</label><input type="file" id="upimg" accept="image/*" multiple>
+    <label>Highlights (one per line)</label><textarea id="hl"></textarea>
+    <label>Description</label><textarea id="d"></textarea>
+    <label>Rating breakdown (one per line, like Camera: 4.7)</label><textarea id="sp"></textarea>
+    <label>Specifications (one per line, like Brand: Apple)</label><textarea id="spec"></textarea>
+    <label>Review photos (image URLs, one per line)</label><textarea id="rp" style="min-height:70px"></textarea>
+    <label>Reviews (one per line: rating | title | review | name | photo URLs separated by space)</label><textarea id="rv" style="min-height:130px"></textarea>
+    <p class="row"><button class="btn" id="save">Add to site</button><button class="btn s" id="cancel">Cancel</button></p>
+    <div id="sm"></div>
+  </section>
+
+  <section class="card hide" id="s3">
+    <h2>Step 3. Download your updated site</h2>
+    <div class="list" id="list"></div>
+    <p><button class="btn" id="dl2" style="width:100%">Download updated HTML</button></p>
+    <div id="dm"></div>
+  </section>
+</main>
+<script>
+var SBU='https://hfblohzslbwudcwvnwky.supabase.co',SBK='sb_publishable_RS9uv25pcLKoc7TsTa6AqQ_saqpwv2l';
+var $=function(i){return document.getElementById(i)},cur=null,IM=[],HTML='',NAME='site.html',P=[],DIRTY=false;
+var BLK=/(<script[^>]*id="products"[^>]*>)([\s\S]*?)(<\/script>)/;
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function note(id,t,ok){$(id).innerHTML=t?'<div class="msg '+(ok?'o':'e')+'">'+esc(t)+'</div>':''}
+function hdr(){return{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json'}}
+/* ---- page parser (runs in the browser, same logic as the edge function) ---- */
+function arr(x){return Array.isArray(x)?x:x==null?[]:[x]}
+function clean(s){return String(s==null?'':s).replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&quot;|&#34;/g,'"').replace(/&#39;|&rsquo;/g,"'").replace(/\s+/g,' ').trim()}
+function meta(h,k){var m=h.match(new RegExp('<meta[^>]+(?:property|name)=["\']'+k+'["\'][^>]+content=["\']([^"\']*)','i'));return m?clean(m[1]):''}
+function bigImg(u){return String(u).replace(/\{@width\}|\{@height\}/g,'800').replace(/\{@quality\}/g,'80').replace(/\/\d+\/\d+\//,'/832/832/').replace(/\?q=\d+$/,'')}
+function parsePage(html,url){var ld=null,re=/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi,m;
+ while((m=re.exec(html))){try{var j=JSON.parse(m[1]);var hit=arr(j['@graph']||j).reduce(function(a,b){return a.concat(arr(b))},[]).filter(function(o){return o&&/Product/i.test(arr(o['@type']).join())})[0];if(hit){ld=hit;break}}catch(e){}}
+ ld=ld||{};var offer=arr(ld.offers)[0]||{},imgs=arr(ld.image).map(function(x){return typeof x=='string'?x:x&&x.url}).concat([meta(html,'og:image')]).filter(Boolean).map(bigImg);
+ var amz=html.match(/id="productTitle"[^>]*>([\s\S]*?)<\/span>/),hl=[],fk=html.match(/"highlights"\s*:\s*\[((?:"[^"]*",?\s*)+)\]/);
+ if(fk){try{hl=JSON.parse('['+fk[1].replace(/,\s*$/,'')+']').map(clean)}catch(e){}}
+ if(!hl.length){var fb=html.match(/id="feature-bullets"[\s\S]*?<\/ul>/);if(fb){var r2=/a-list-item[^>]*>([\s\S]*?)<\/span>/g,x;while((x=r2.exec(fb[0])))if(clean(x[1]))hl.push(clean(x[1]))}}
+ var mrp=html.match(/"(?:mrp|originalPrice|maxRetailPrice)"\s*:\s*\{?[^}\d]{0,40}?(\d[\d,]*)/i),rt=ld.aggregateRating||{};
+ return{n:clean(ld.name||(amz&&amz[1])||meta(html,'og:title')),i:imgs.filter(function(v,k){return imgs.indexOf(v)==k}).slice(0,12),d:clean(ld.description||meta(html,'og:description')),
+ p:Number(String(offer.price!=null?offer.price:offer.lowPrice||'').replace(/,/g,''))||0,m:mrp?Number(mrp[1].replace(/,/g,'')):0,r:Number(rt.ratingValue)||0,rc:Number(rt.ratingCount||rt.reviewCount)||0,hl:hl.slice(0,10),
+ rv:arr(ld.review).slice(0,20).map(function(v){return{s:Number(v.reviewRating&&v.reviewRating.ratingValue)||5,t:clean(v.name),d:clean(v.reviewBody),u:clean(v.author&&v.author.name||v.author)||'Customer'}}),src:url}}
+
+/* ---- deep reviews: reads the shop's own embedded data, follows review pages ---- */
+function getState(h){var m=h.match(/__INITIAL_STATE__\s*=\s*(\{[\s\S]*?\})\s*;?\s*<\/script>/);if(!m)return null;try{return JSON.parse(m[1])}catch(e){return null}}
+function isImg(s){return typeof s=='string'&&/^https?:\/\//.test(s)&&/(flixcart|rukminim|fkcdn|\.(jpe?g|png|webp))/i.test(s)}
+function imgsIn(o,d){var a=[];d=d||0;if(d>4||o==null)return a;if(isImg(o))return [bigImg(o)];if(Array.isArray(o)){o.forEach(function(x){a=a.concat(imgsIn(x,d+1))})}else if(typeof o=='object'){Object.keys(o).forEach(function(k){a=a.concat(imgsIn(o[k],d+1))})}return a}
+function pick(o,ks){for(var i=0;i<ks.length;i++){var v=o[ks[i]];if(v!=null&&v!=='')return v}}
+function walkState(st,out){var seen=new Set();(function w(o,k){if(!o||typeof o!='object'||seen.has(o))return;seen.add(o);
+ if(!Array.isArray(o)){var txt=pick(o,['reviewText','reviewBody','text','comment','review','description']),rt=pick(o,['rating','ratingValue','stars','overallRating']);
+  if(rt&&typeof rt=='object')rt=rt.value||rt.rating;rt=Number(rt);
+  if(typeof txt=='string'&&txt.length>=3&&rt>=1&&rt<=5){var ph=[];Object.keys(o).forEach(function(x){if(/image|photo|media|img|pic/i.test(x))ph=ph.concat(imgsIn(o[x]))});
+   var au=pick(o,['author','authorName','userName','reviewer','name']);if(au&&typeof au=='object')au=au.name;var lc=Number(pick(o,['helpfulCount','upvotes','upvote','likes','helpful']))||0;
+   out.rv.push({s:Math.round(rt),t:clean(pick(o,['title','reviewTitle','headline'])||''),d:clean(txt),u:clean(au||'Customer'),l:lc,x:0,ph:ph.filter(function(v,i){return ph.indexOf(v)==i}).slice(0,6)})}}
+ else if(o.length>=3&&/aspect|attribute|feature|parameter/i.test(k||'')){var as=o.map(function(it){if(!it||typeof it!='object')return null;var n=pick(it,['name','title','label','aspect']),v=Number(pick(it,['value','rating','score','averageRating']));return typeof n=='string'&&v>=1&&v<=5?[clean(n),Math.round(v*10)/10]:null}).filter(Boolean);if(as.length>=3&&!out.asp.length)out.asp=as}
+ Object.keys(o).forEach(function(x){w(o[x],x)})})(st,'')}
+function reviewsUrl(u,pg){var m=u.match(/^(https?:\/\/[^/]*flipkart\.com\/[^/]+)\/p\/(itm\w+)([^#]*)/i);if(!m)return null;var q=m[3]||'';return m[1]+'/product-reviews/'+m[2]+q+(q.indexOf('?')<0?'?':'&')+'page='+pg}
+function deep(url,fetchHtml,html0,max){var out={rv:[],asp:[],rp:[]},pg=1;
+ function absorb(h){var st=getState(h);if(st)walkState(st,out)}
+ function finish(){var s={},rv=[];out.rv.forEach(function(v){var k=v.d.slice(0,60);if(!s[k]){s[k]=1;rv.push(v)}});out.rv=rv;var rp=[];rv.forEach(function(v){rp=rp.concat(v.ph)});out.rp=rp.filter(function(v,i){return rp.indexOf(v)==i}).slice(0,40);return out}
+ absorb(html0||'');
+ function next(){if(pg>max||!reviewsUrl(url,pg))return Promise.resolve(finish());var before=out.rv.length;
+  return fetchHtml(reviewsUrl(url,pg)).then(function(h){absorb(h);pg++;return out.rv.length>before?next():finish()}).catch(function(){return finish()})}
+ return next()}
+
+
+var PX=['https://api.allorigins.win/raw?url=','https://corsproxy.io/?','https://api.codetabs.com/v1/proxy?quest='];
+function tmo(u,o,ms){var c=new AbortController(),t=setTimeout(function(){c.abort()},ms);o=o||{};o.signal=c.signal;return fetch(u,o).then(function(r){clearTimeout(t);return r},function(e){clearTimeout(t);throw e})}
+function htmlVia(u,k){k=k||0;if(k>=PX.length)return Promise.reject(new Error('Could not read this page. Fill the form by hand.'));
+ return tmo(PX[k]+encodeURIComponent(u),{},15000).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(h){if(h.length<500)throw 0;return h}).catch(function(){return htmlVia(u,k+1)})}
+function viaProxy(u){return htmlVia(u).then(function(h){var j=parsePage(h,u);if(!j.n)throw new Error('Could not read this page. Fill the form by hand.');
+ return deep(u,htmlVia,h,5).then(function(d){if(d.rv.length>j.rv.length)j.rv=d.rv;j.rp=d.rp;j.asp=d.asp;j.rn=j.rv.length;return j})})}
+function getProduct(u){return tmo(SBU+'/functions/v1/fetch-product',{method:'POST',headers:hdr(),body:JSON.stringify({url:u})},45000).then(function(r){return r.json()}).then(function(j){if(j.error||!j.n)throw 0;return j}).catch(function(){return viaProxy(u)})}
+$('fetch').onclick=function(){var u=$('url').value.trim();if(!/^https?:\/\//i.test(u))return note('fm','Paste a full product link starting with https://');var b=$('fetch');b.disabled=true;b.textContent='Fetching…';note('fm','');
+ getProduct(u).then(function(j){fill(j,null);note('fm','Fetched. Check the details below and save.',true)}).catch(function(e){fill({},null);note('fm',e.message)}).then(function(){b.disabled=false;b.textContent='Fetch'})};
+
+/* ---- form ---- */
+function fill(j,row){cur=row;$('ed').classList.remove('hide');$('edt').textContent=row?'Edit product':'Review and save';
+ $('n').value=j.n||'';$('p').value=j.p||'';$('m').value=j.m||'';$('r').value=j.r||'';$('rc').value=j.rc||'';$('dl').value=j.dl||3;
+ var c=j.c||'Electronics';if(![].some.call($('c').options,function(o){return o.value==c})){var o=document.createElement('option');o.textContent=c;$('c').appendChild(o)}$('c').value=c;
+ IM=(j.i&&j.i.slice?j.i:(j.g||[])).slice();if(row&&row.g&&row.g.length)IM=row.g.slice();drawImgs();
+ $('hl').value=(j.hl||[]).join('\n');$('d').value=j.d||'';
+ $('sp').value=(j.asp||[]).map(function(x){return x[0]+': '+x[1]}).join('\n');$('spec').value=j.spec||'';$('rp').value=(j.rp||[]).join('\n');
+ $('rv').value=(j.rv||[]).map(function(v){return [v.s,String(v.t||'').replace(/\|/g,'/'),String(v.d||v.b||'').replace(/\|/g,'/'),v.u||v.a||'',(v.ph||[]).join(' ')].join(' | ')}).join('\n');
+ note('sm','');$('ed').scrollIntoView({behavior:'smooth'})}
+function drawImgs(){$('imgs').innerHTML=IM.map(function(u,i){return '<div'+(i?'':' class="main"')+'><img src="'+esc(u)+'" referrerpolicy="no-referrer" alt=""><button data-i="'+i+'" title="Remove" aria-label="Remove image">×</button></div>'}).join('')||'<small>No images yet.</small>';
+ [].forEach.call($('imgs').querySelectorAll('button'),function(b){b.onclick=function(){IM.splice(+b.dataset.i,1);drawImgs()}})}
+$('addbtn').onclick=function(){var u=$('addimg').value.trim();if(u){IM.push(u);$('addimg').value='';drawImgs()}};
+$('upimg').onchange=function(){[].forEach.call(this.files,function(f){var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var s=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);IM.push(c.toDataURL('image/jpeg',.82));URL.revokeObjectURL(u);drawImgs()};im.src=u});this.value=''};
+$('cancel').onclick=function(){$('ed').classList.add('hide');cur=null};
+function ROWN(){return $('rv').value.split('\n').filter(function(l){return l.trim()}).length}
+function lines(id){return $(id).value.split('\n').map(function(s){return s.trim()}).filter(Boolean)}
+
+
+/* ---- upload ---- */
+function readSite(f){if(!f)return;var r=new FileReader();r.onload=function(){var t=String(r.result),m=t.match(BLK);
+ if(!m)return note('um','This file has no product list. Choose the site .html file you shared (copyweb.html).');
+ var d;try{d=JSON.parse(m[2].trim()||'[]')}catch(e){return note('um','Could not read the product list inside this file.')}
+ if(!Array.isArray(d))return note('um','Could not read the product list inside this file.');
+ HTML=t;NAME=f.name;P=d;DIRTY=false;$('nm').textContent=NAME;note('um','Loaded '+NAME+' with '+P.length+' product'+(P.length==1?'':'s')+'.',true);$('s2').classList.remove('hide');$('s3').classList.remove('hide');list()};
+ r.readAsText(f)}
+$('file').onchange=function(){readSite(this.files[0])};
+var dz=$('drop');['dragover','dragenter'].forEach(function(t){dz.addEventListener(t,function(e){e.preventDefault()})});dz.addEventListener('drop',function(e){e.preventDefault();readSite(e.dataTransfer.files[0])});
+/* ---- add / edit ---- */
+$('save').onclick=function(){var n=$('n').value.trim(),p=Number($('p').value);if(!n||!(p>0))return note('sm','Title and sale price are required.');if(!IM.length)return note('sm','Add at least one image.');
+ var id=cur?cur.id:Math.floor(Date.now()/1000),m=Number($('m').value);
+ var val={id:id,n:n,p:p,m:m>p?m:p,i:IM[0],g:IM,c:$('c').value,r:Number($('r').value)||4.5,rc:Number($('rc').value)||0,dl:Number($('dl').value)||3,pk:99,
+  hl:lines('hl'),d:$('d').value.trim(),spec:$('spec').value.trim(),rp:lines('rp'),
+  asp:lines('sp').map(function(l){var a=l.split(':');return[a[0].trim(),Number(a[1])||0]}).filter(function(x){return x[0]&&x[1]}),
+  rv:lines('rv').map(function(l){var a=l.split('|').map(function(s){return s.trim()});return{s:Number(a[0])||5,t:a[1]||'',d:a[2]||'',u:a[3]||'Customer',l:0,x:0,ph:(a[4]||'').split(/\s+/).filter(Boolean)}}).filter(function(v){return v.d}),rn:ROWN(),
+  src:$('url').value.trim()||(cur&&cur.src)||''};
+ var k=-1;P.forEach(function(x,i){if(cur&&x.id==cur.id)k=i});if(k>-1)P[k]=val;else P.push(val);
+ DIRTY=true;cur=null;$('ed').classList.add('hide');$('url').value='';note('fm','Added. Paste the next link, or download your site below.',true);list()};
+function ROWN(){return $('rv').value.split('\n').filter(function(l){return l.trim()}).length}
+function lines(id){return $(id).value.split('\n').map(function(s){return s.trim()}).filter(Boolean)}
+$('cancel').onclick=function(){$('ed').classList.add('hide');cur=null};
+/* ---- list + download ---- */
+function list(){$('list').innerHTML=P.length?P.slice().reverse().map(function(v){var i=P.indexOf(v);return '<div class="it"><img src="'+esc(v.i)+'" referrerpolicy="no-referrer" alt=""><div class="t"><b>'+esc(v.n)+'</b><small>&#8377;'+Number(v.p).toLocaleString('en-IN')+' &middot; '+esc(v.c||'')+'</small></div><button class="btn s" data-e="'+i+'">Edit</button><button class="btn d" data-x="'+i+'">Remove</button></div>'}).join(''):'<small>No products yet. Paste a link in step 2.</small>';
+ [].forEach.call($('list').querySelectorAll('[data-e]'),function(b){b.onclick=function(){var v=P[+b.dataset.e];fill(v,v)}});
+ [].forEach.call($('list').querySelectorAll('[data-x]'),function(b){b.onclick=function(){var v=P[+b.dataset.x];if(confirm('Remove "'+v.n+'"?')){P.splice(+b.dataset.x,1);DIRTY=true;list()}}})}
+$('dl2').onclick=function(){if(!HTML)return;var j=JSON.stringify(P).replace(/</g,'\\u003c'),out=HTML.replace(BLK,function(m,a,b,c){return a+'\n'+j+'\n'+c});
+ var blob=new Blob([out],{type:'text/html'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=NAME.replace(/\.html?$/i,'')+'-updated.html';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);DIRTY=false;note('dm','Downloaded '+a.download+'. Upload this file to your hosting to publish it.',true)};
+window.addEventListener('beforeunload',function(e){if(DIRTY){e.preventDefault();e.returnValue=''}});
+</script>
+</body>
+</html>
